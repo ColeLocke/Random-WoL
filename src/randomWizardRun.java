@@ -4,9 +4,10 @@
 import java.io.*;
 import org.json.*;
 import org.apache.commons.io.*;
+import java.net.*;
 
 public class randomWizardRun {
-	static String filePath = "C:\\Users\\Trim\\Downloads\\tomeofknowledge.json";
+	static String filePath = "http://www.tomeofknowledge.info/data/db.json";
 	static String[] arcanaType = { "Basic", "Dash", "Standard", "Signature" };
 
 	public static String elementDetermination(int ran) {
@@ -96,9 +97,9 @@ public class randomWizardRun {
 		return arcana;
 	}
 
-	public static void main(String[] args) throws IOException, JSONException {
+	public static void main(String[] args) throws IOException, JSONException, MalformedURLException {
 		// the database file
-		InputStream file = new FileInputStream(filePath);
+		InputStream file = new URL(filePath).openStream();
 		// create a JSON object which takes the file as an input. Later on search the
 		// file for various objects
 		JSONObject obj = new JSONObject(IOUtils.toString(file));

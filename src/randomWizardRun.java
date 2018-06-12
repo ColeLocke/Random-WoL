@@ -1,5 +1,5 @@
 
-//TODO: Robes, tailor, rich bitch, dude
+//TODO: Robes maybe
 
 import java.io.*;
 import org.json.*;

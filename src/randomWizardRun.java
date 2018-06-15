@@ -2,9 +2,10 @@
 //TODO: Robes maybe
 
 import java.io.*;
+import java.net.*;
+import javax.swing.*;
 import org.json.*;
 import org.apache.commons.io.*;
-import java.net.*;
 
 public class randomWizardRun {
 	static String filePath = "http://www.tomeofknowledge.info/data/db.json";
@@ -98,6 +99,17 @@ public class randomWizardRun {
 	}
 
 	public static void main(String[] args) throws IOException, JSONException, MalformedURLException {
+		JFrame myFrame = new JFrame("Test");
+		JTextArea myText = new JTextArea();
+		JButton myButton = new JButton();
+		myButton.setSize(10,10);
+		myFrame.setSize(200,200);
+		myText.setEditable(false);
+		myFrame.add(myText);
+		myFrame.add(myButton);
+		myText.append("Hello");
+		myText.append("World!");
+		myFrame.setVisible(true);
 		// the database file
 		InputStream file = new URL(filePath).openStream();
 		// create a JSON object which takes the file as an input. Later on search the

@@ -1,0 +1,2 @@
+Main-Class: randomWizardRun
+Class-Path: ./json-20180130-sources.jar ./commons-io-2.6.jar

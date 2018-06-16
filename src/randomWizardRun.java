@@ -1,9 +1,14 @@
-
-//TODO: Robes, tailor, rich bitch, dude
-
 import java.io.*;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
+import java.awt.event.*;
+
 import org.json.*;
 import org.apache.commons.io.*;
+
 
 public class randomWizardRun {
 	static String filePath = "C:\\Users\\Trim\\Downloads\\tomeofknowledge.json";
@@ -97,71 +102,140 @@ public class randomWizardRun {
 	}
 
 	public static void main(String[] args) throws IOException, JSONException {
-		// the database file
-		InputStream file = new FileInputStream(filePath);
-		// create a JSON object which takes the file as an input. Later on search the
-		// file for various objects
-		JSONObject obj = new JSONObject(IOUtils.toString(file));
 
-		// String variables which change in each step to the corresponding spell that
-		// has been chosen
-		String chosenSpellName = "";
-		String chosenElement = "";
-		int chosenSpellNumber = 0;
-		String temp = "";
+		JFrame appFrame = new JFrame("WoL Randomizer"); // create application frame
+		appFrame.setSize(400, 500); // default window size
 
-		// generate a lot of random numbers :D
-		int randomElement = 0;
-		int relicRandom = (int) (Math.random() * 177 + 1);
-		int basicRandomArcana = (int) (Math.random() * 2 + 1); // for each type two basic
-		int dashRandomArcana = (int) (Math.random() * 2 + 1); // and two dash arcana exist
-		int standardRandomArcana = (int) (Math.random() * 20 + 1); // actually 16 standard arcana but...
-		int signatureRandomArcana = (int) (Math.random() * 4 + 1); // the 4 signature arcana can also be used as
-																	// standard
-		int chaosStandardRandomArcana = (int) (Math.random() * 6 + 1); // different for chaos arcana
-		int chaosSignatureRandomArcana = (int) (Math.random() * 6 + 1);
+		JTextArea appTextArea = new JTextArea("Click the button!!!"); // create a text area in app frame
+		appTextArea.setBounds(0, 0, 400, 200);
+		appTextArea.setEditable(false);
+		appFrame.add(appTextArea);
 
-		// save random numbers in array for convenience
-		int[] randomArcanaArray = { basicRandomArcana, dashRandomArcana, standardRandomArcana, signatureRandomArcana };
-		int[] chaosArcanaArray = { 1, 1, chaosStandardRandomArcana, chaosSignatureRandomArcana };
+		JButton appButton = new JButton("Randomize!"); // create button in app frame
+		appButton.setBounds(150, 400, 100, 25);
+		appButton.addActionListener(new ActionListener() {
 
-		// let the RNG begin!!!
+			public void actionPerformed(ActionEvent arg0){
+				// the database file
+				InputStream file = null;
+				try {
+					file = new FileInputStream(filePath);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				// create a JSON object which takes the file as an input. Later on search the
+				// file for various objects
+				JSONObject obj = null;
+				try {
+					obj = new JSONObject(IOUtils.toString(file));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-		// the relic
-		// pretty straight forward; generate random number, look it up in database (JSON
-		// file), fetch name, use it as output
-		while (obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("pool").equals("")) {
-			// certain items are only available in the trials (e.g. cursed items,...)
-			relicRandom = (int) (Math.random() * 177 + 1);
-		}
-		System.out.println("Relic: \t\t" + obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("name")
-				+ " (" + obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("type") + ")");
+				// String variables which change in each step to the corresponding spell that
+				// has been chosen
+				String chosenSpellName = "";
+				String chosenElement = "";
+				int chosenSpellNumber = 0;
+				String temp = "";
 
-		// the arcana
-		for (int i = 0; i < arcanaType.length; i++) {
-			temp = chosenSpellName; // only relevant for signature arcana
-			while (temp == chosenSpellName) {// avoids having same arcana as standard and signature
+				// generate a lot of random numbers :D
+				int randomElement = 0;
+				int relicRandom = (int) (Math.random() * 177 + 1);
+				int basicRandomArcana = (int) (Math.random() * 2 + 1); // for each type two basic
+				int dashRandomArcana = (int) (Math.random() * 2 + 1); // and two dash arcana exist
+				int standardRandomArcana = (int) (Math.random() * 20 + 1); // actually 16 standard arcana but...
+				int signatureRandomArcana = (int) (Math.random() * 4 + 1); // the 4 signature arcana can also be used as
+																			// standard
+				int chaosStandardRandomArcana = (int) (Math.random() * 6 + 1); // different for chaos arcana
+				int chaosSignatureRandomArcana = (int) (Math.random() * 6 + 1);
 
-				randomElement = (int) (Math.random() * 16 + 1); // first choose the element of the arcana
-				chosenElement = elementDetermination(randomElement); // save chosen element in separate String to avoid
-																		// conflict with chaos type
+				// save random numbers in array for convenience
+				int[] randomArcanaArray = { basicRandomArcana, dashRandomArcana, standardRandomArcana, signatureRandomArcana };
+				int[] chaosArcanaArray = { 1, 1, chaosStandardRandomArcana, chaosSignatureRandomArcana };
 
-				if (!chosenElement.equals("Chaos")) {
-					// choose the actual spell and save name and number
-					chosenSpellName = spellDetermination(file, obj, arcanaType[i], chosenElement,
-							randomArcanaArray[i])[0];
-					chosenSpellNumber = Integer.parseInt(
-							spellDetermination(file, obj, arcanaType[i], chosenElement, randomArcanaArray[i])[1]);
-				} else {
-					// if it's a chaos spell, use the chaosSpellNumber Array instead
-					chosenSpellName = spellDetermination(file, obj, arcanaType[i], chosenElement,
-							chaosArcanaArray[i])[0];
-					chosenSpellNumber = Integer.parseInt(
-							spellDetermination(file, obj, arcanaType[i], chosenElement, chaosArcanaArray[i])[1]);
+				// let the RNG begin!!!
+
+				// the relic
+				// pretty straight forward; generate random number, look it up in database (JSON
+				// file), fetch name, use it as output
+				try {
+					while (obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("pool").equals("")) {
+						// certain items are only available in the trials (e.g. cursed items,...)
+						relicRandom = (int) (Math.random() * 177 + 1);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				try {
+					appTextArea.setText("Relic: \t\t" + obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("name")
+							+ " (" + obj.getJSONObject("relics").getJSONObject("" + relicRandom).getString("type") + ")\n\n");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				// the arcana
+				for (int i = 0; i < arcanaType.length; i++) {
+					temp = chosenSpellName; // only relevant for signature arcana
+					while (temp == chosenSpellName) {// avoids having same arcana as standard and signature
+
+						randomElement = (int) (Math.random() * 16 + 1); // first choose the element of the arcana
+						chosenElement = elementDetermination(randomElement); // save chosen element in separate String to avoid
+																				// conflict with chaos type
+
+						if (!chosenElement.equals("Chaos")) {
+							// choose the actual spell and save name and number
+							try {
+								chosenSpellName = spellDetermination(file, obj, arcanaType[i], chosenElement,
+										randomArcanaArray[i])[0];
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								chosenSpellNumber = Integer.parseInt(
+										spellDetermination(file, obj, arcanaType[i], chosenElement, randomArcanaArray[i])[1]);
+							} catch (NumberFormatException e) {
+								e.printStackTrace();
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						} else {
+							// if it's a chaos spell, use the chaosSpellNumber Array instead
+							try {
+								chosenSpellName = spellDetermination(file, obj, arcanaType[i], chosenElement,
+										chaosArcanaArray[i])[0];
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								chosenSpellNumber = Integer.parseInt(
+										spellDetermination(file, obj, arcanaType[i], chosenElement, chaosArcanaArray[i])[1]);
+							} catch (NumberFormatException e) {
+								e.printStackTrace();
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					try {
+						appTextArea.append(arcanaType[i] + ": \t\t" + chosenSpellName + " ("
+								+ obj.getJSONObject("spells").getJSONObject("" + chosenSpellNumber).getString("type") + ")\n\n");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			System.out.println(arcanaType[i] + ": \t\t" + chosenSpellName + " ("
-					+ obj.getJSONObject("spells").getJSONObject("" + chosenSpellNumber).getString("type") + ")");
-		}
+			
+		});
+		appFrame.add(appButton);
+
+		appFrame.setLayout(null);
+		appFrame.setVisible(true);
+		appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
 	}
 }
